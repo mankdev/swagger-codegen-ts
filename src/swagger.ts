@@ -1,14 +1,14 @@
 import * as t from 'io-ts';
-import { createOptionFromNullable } from 'io-ts-types';
-import { Option } from 'fp-ts/lib/Option';
 import { mixed } from 'io-ts';
+import { Option } from 'fp-ts/lib/Option';
 import { TPathParameterObject } from './swagger';
+import { optionFromNullable } from 'io-ts-types/lib/optionFromNullable';
 
-export const stringOption = createOptionFromNullable(t.string);
-export const booleanOption = createOptionFromNullable(t.boolean);
-export const numberOption = createOptionFromNullable(t.number);
-export const stringArrayOption = createOptionFromNullable(t.array(t.string));
-export const primitiveArrayOption = createOptionFromNullable(t.array(t.union([t.string, t.boolean, t.number])));
+export const stringOption = optionFromNullable(t.string);
+export const booleanOption = optionFromNullable(t.boolean);
+export const numberOption = optionFromNullable(t.number);
+export const stringArrayOption = optionFromNullable(t.array(t.string));
+export const primitiveArrayOption = optionFromNullable(t.array(t.union([t.string, t.boolean, t.number])));
 
 export type TDictionary<A> = {
 	[key: string]: A;
@@ -46,8 +46,8 @@ export const InfoObject: t.Type<TInfoObject, mixed> = t.type({
 	title: t.string,
 	description: stringOption,
 	termsOfService: stringOption,
-	contact: createOptionFromNullable(ContactObject),
-	license: createOptionFromNullable(LicenseObject),
+	contact: optionFromNullable(ContactObject),
+	license: optionFromNullable(LicenseObject),
 	version: t.string,
 });
 
@@ -156,8 +156,8 @@ export const SchemaObject: t.Type<TSchemaObject, mixed> = t.recursion<TSchemaObj
 			...BaseSchemaObjectProps,
 			required: stringArrayOption,
 			type: t.literal('object'),
-			properties: createOptionFromNullable(t.dictionary(t.string, SchemaObject)),
-			additionalProperties: createOptionFromNullable(SchemaObject),
+			properties: optionFromNullable(t.dictionary(t.string, SchemaObject)),
+			additionalProperties: optionFromNullable(SchemaObject),
 		});
 		const ReferenceOrAllOfSchemaObject: t.Tagged<'type', TReferenceOrAllOfSchemeObject, mixed> = t.union([
 			t.intersection([
@@ -212,7 +212,7 @@ export type TBaseItemsObject = {
 };
 export const BaseItemsObjectProps = {
 	format: stringOption,
-	collectionFormat: createOptionFromNullable(
+	collectionFormat: optionFromNullable(
 		t.union([t.literal('csv'), t.literal('ssv'), t.literal('tsv'), t.literal('pipes')]),
 	),
 	maximum: numberOption,
@@ -277,7 +277,7 @@ export const ItemsObject: t.Type<TItemsObject, mixed> = t.recursion<TItemsObject
 	const ArrayItemsObject = t.type({
 		...BaseItemsObjectProps,
 		type: t.literal('array'),
-		items: createOptionFromNullable(t.array(ItemsObject)),
+		items: optionFromNullable(t.array(ItemsObject)),
 	});
 	return t.taggedUnion('type', [
 		ArrayItemsObject,
@@ -539,9 +539,9 @@ export type TResponseObject = {
 };
 export const ResponseObject: t.Type<TResponseObject, mixed> = t.type({
 	description: t.string,
-	schema: createOptionFromNullable(SchemaObject),
-	headers: createOptionFromNullable(HeadersObject),
-	examples: createOptionFromNullable(ExampleObject),
+	schema: optionFromNullable(SchemaObject),
+	headers: optionFromNullable(HeadersObject),
+	examples: optionFromNullable(ExampleObject),
 });
 
 export type TResponsesObject = TDictionary<TResponseObject>;
@@ -571,15 +571,15 @@ export const OperationObject: t.Type<TOperationObject, mixed> = t.type({
 	tags: stringArrayOption,
 	summary: stringOption,
 	description: stringOption,
-	externalDocs: createOptionFromNullable(ExternalDocumentationObject),
+	externalDocs: optionFromNullable(ExternalDocumentationObject),
 	operationId: stringOption,
 	consumes: stringArrayOption,
 	produces: stringArrayOption,
-	parameters: createOptionFromNullable(t.array(t.union([ParameterObject, ReferenceObject]))),
+	parameters: optionFromNullable(t.array(t.union([ParameterObject, ReferenceObject]))),
 	responses: ResponsesObject,
 	schemes: stringArrayOption,
 	deprecated: booleanOption,
-	security: createOptionFromNullable(t.array(SecurityRequirementObject)),
+	security: optionFromNullable(t.array(SecurityRequirementObject)),
 });
 
 export type TPathItemObject = {
@@ -595,14 +595,14 @@ export type TPathItemObject = {
 };
 export const PathItemObject: t.Type<TPathItemObject, mixed> = t.type({
 	$ref: stringOption,
-	get: createOptionFromNullable(OperationObject),
-	put: createOptionFromNullable(OperationObject),
-	post: createOptionFromNullable(OperationObject),
-	delete: createOptionFromNullable(OperationObject),
-	options: createOptionFromNullable(OperationObject),
-	head: createOptionFromNullable(OperationObject),
-	patch: createOptionFromNullable(OperationObject),
-	parameters: createOptionFromNullable(t.array(t.union([ParameterObject, ReferenceObject]))),
+	get: optionFromNullable(OperationObject),
+	put: optionFromNullable(OperationObject),
+	post: optionFromNullable(OperationObject),
+	delete: optionFromNullable(OperationObject),
+	options: optionFromNullable(OperationObject),
+	head: optionFromNullable(OperationObject),
+	patch: optionFromNullable(OperationObject),
+	parameters: optionFromNullable(t.array(t.union([ParameterObject, ReferenceObject]))),
 });
 
 export type TPathsObject = TDictionary<TPathItemObject>;
@@ -743,7 +743,7 @@ export type TTagObject = {
 export const TagObject: t.Type<TTagObject, mixed> = t.type({
 	name: t.string,
 	description: stringOption,
-	externalDocs: createOptionFromNullable(ExternalDocumentationObject),
+	externalDocs: optionFromNullable(ExternalDocumentationObject),
 });
 
 export type TSwaggerObject = {
@@ -766,17 +766,17 @@ export type TSwaggerObject = {
 export const SwaggerObject: t.Type<TSwaggerObject, mixed> = t.type({
 	basePath: stringOption,
 	consumes: stringArrayOption,
-	definitions: createOptionFromNullable(DefinitionsObject),
-	externalDocs: createOptionFromNullable(ExternalDocumentationObject),
+	definitions: optionFromNullable(DefinitionsObject),
+	externalDocs: optionFromNullable(ExternalDocumentationObject),
 	host: stringOption,
 	info: InfoObject,
-	parameters: createOptionFromNullable(ParametersDefinitionsObject),
+	parameters: optionFromNullable(ParametersDefinitionsObject),
 	paths: PathsObject,
 	produces: stringArrayOption,
-	responses: createOptionFromNullable(ResponsesDefinitionsObject),
+	responses: optionFromNullable(ResponsesDefinitionsObject),
 	schemes: stringArrayOption,
-	security: createOptionFromNullable(t.array(SecurityRequirementObject)),
-	securityDefinitions: createOptionFromNullable(SecurityDefinitionsObject),
+	security: optionFromNullable(t.array(SecurityRequirementObject)),
+	securityDefinitions: optionFromNullable(SecurityDefinitionsObject),
 	swagger: t.string,
-	tags: createOptionFromNullable(t.array(TagObject)),
+	tags: optionFromNullable(t.array(TagObject)),
 });
